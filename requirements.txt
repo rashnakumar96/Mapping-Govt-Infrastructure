@@ -1,0 +1,7 @@
+selenium
+browsermob-proxy
+requests
+dnspython
+tldextract
+beautifulsoup4
+psutil
