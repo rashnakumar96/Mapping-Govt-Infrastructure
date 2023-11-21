@@ -1,5 +1,6 @@
 version: "3"
-name: govt-infra
+# name: govt-infra
+# name: mapgovtinfra          
 services:
   vpn:
     image: ghcr.io/bubuntux/nordvpn
@@ -8,20 +9,24 @@ services:
       - NET_RAW                 # Required
     environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
       - TOKEN=e9f2ab4ff8566ff66f85f33cb9311abc2eabee69efa95636404c3f14e0794d6a     # Required
-      - CONNECT=Germany
+      - CONNECT=Argentina
       - TECHNOLOGY=NordLynx
       - NETWORK=192.168.1.0/24  # So it can be accessed within the local network
     ports:
-      - 8080:8080
+      - 8888:8888
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1  # Recomended if using ipv4 only
   downloader:
     container_name: downloader
     image: downloader:latest
     entrypoint: python3 /scripts/collectResourcestoDepthN.py DE Germany
+    # entrypoint: python3 /scripts/collectResourcestoDepthN.py AR Argentina
+    # entrypoint: tail -f "/dev/null"
     volumes:
     - ./results:/results
     - ./data:/data
     network_mode: service:vpn
+    environment:
+    - PYTHONUNBUFFERED=1
     depends_on:
       - vpn
