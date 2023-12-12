@@ -9,7 +9,7 @@ services:
       - NET_RAW                 # Required
     environment:                # Review https://github.com/bubuntux/nordvpn#environment-variables
       - TOKEN=e9f2ab4ff8566ff66f85f33cb9311abc2eabee69efa95636404c3f14e0794d6a     # Required
-      - CONNECT=Argentina
+      - CONNECT=Indonesia
       - TECHNOLOGY=NordLynx
       - NETWORK=192.168.1.0/24  # So it can be accessed within the local network
     ports:
@@ -19,9 +19,7 @@ services:
   downloader:
     container_name: downloader
     image: downloader:latest
-    entrypoint: python3 /scripts/collectResourcestoDepthN.py DE Germany
-    # entrypoint: python3 /scripts/collectResourcestoDepthN.py AR Argentina
-    # entrypoint: tail -f "/dev/null"
+    entrypoint: python3 /scripts/collectResourcestoDepthN.py ID Indonesia
     volumes:
     - ./results:/results
     - ./data:/data

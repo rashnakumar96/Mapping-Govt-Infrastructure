@@ -23,7 +23,7 @@ import statistics
 import findcdn
 import psutil
 import csv
-
+import signal
 
 from collections import defaultdict
 import socket
@@ -494,18 +494,30 @@ def runurls_content_size(urls,country):
 		tempurlSizeMap[url]=content_length
 	updateJsonData('results/urlSizeMap/urlSizeMap_' + country+ '.json',tempurlSizeMap)	
 
+def timeout_handler(signum, frame):
+    raise TimeoutError("A timeout has occurred! Waiting time has expired.")
+
 def get_content_size(url):
     try:
-        response = requests.get(url, stream=True)  # Send a GET request and stream the content
+        signal.signal(signal.SIGALRM, timeout_handler)
+        signal.alarm(60)
+
+        response = requests.get(url, stream=True,timeout=60.0)  # Send a GET request and stream the content
         if 'Content-Length' in response.headers:
             # If Content-Length header is present, return it
             content_length = int(response.headers['Content-Length'])
         else:
             # If Content-Length is not present, calculate it based on the content
             content_length = len(response.content)
-
+        signal.alarm(0)
         return content_length
     except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        return None  # An error occurred
+    except TimeoutError:
+        print("A timeout has occurred! Waiting time has expired.")
+        return None
+    except Exception as e:
         print(f"Error: {e}")
         return None  # An error occurred
 
