@@ -1,6 +1,7 @@
 FROM python:3.9.14 
 
-COPY . /
+COPY scripts/ scripts/
+COPY requirements.txt requirements.txt
 
 # Build Chrome driver 
 RUN apt-get update && \
